@@ -40,7 +40,7 @@
 	 */
 	function cssPath(el) {
 		var fullPath    = 0,  // Set to 1 to build ultra-specific full CSS-path, or 0 for optimised selector
-		    useNthChild = 0,  // Set to 1 to use ":nth-child()" pseudo-selectors to match the given element
+		    useNthChild = 1,  // Set to 1 to use ":nth-child()" pseudo-selectors to match the given element
 		    cssPathStr = '',
 		    testPath = '',
 		    parents = [],
@@ -52,7 +52,8 @@
 		    vagueMatch,
 		    nth,
 		    i,
-		    c;
+		    c,
+		    current = el;
 		
 		// Go up the list of parent nodes and build unique identifier for each:
 		while ( el ) {
@@ -104,7 +105,7 @@
 				if ( !parentSelectors[i].match(/\./) || $( cssPathStr ).length > 1 ) {
 					
 					// Count element's previous siblings for ":nth-child" pseudo-selector:
-					for ( nth = 1, c = el; c.previousElementSibling; c = c.previousElementSibling, nth++ );
+					for ( nth = 1, c = current; c.previousElementSibling; c = c.previousElementSibling, nth++ );
 					
 					// Append ":nth-child()" to CSS path:
 					cssPathStr += ":nth-child(" + nth + ")";
@@ -147,6 +148,7 @@
 	 */
 	function inspectorOnClick(e) {
 		e.preventDefault();
+		e.stopPropagation();
 		
 		// These are the default actions (the XPath code might be a bit janky)
 		// Really, these could do anything:
